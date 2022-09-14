@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "m150-pa"
+version = "0.1.0"
+description = ""
+authors = ["Architeutes <architeutes440@gmail.com>"]
+readme = "README.md"
+packages = [{include = "m150_pa"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "^4.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
