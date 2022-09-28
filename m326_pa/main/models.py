@@ -1,8 +1,9 @@
-from email.policy import default
 from django.db import models
 from django.utils import timezone
 
-class TopLevelCompetence(models.Model):
+
+
+class CompetenceCategory(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     updatedAt = models.DateTimeField(default=timezone.now)
@@ -13,10 +14,31 @@ class TopLevelCompetence(models.Model):
         if not self.id:
             self.createdAt = timezone.now()
         self.updatedAt = timezone.now()
-        return super(TopLevelCompetence, self).save(*args, **kwargs)
+        return super(CompetenceCategory, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name_plural = "Top Level Competences"
+        verbose_name_plural = "Competence Categories"
+
+    def __str__(self):
+        return self.name
+
+
+
+class CompetenceLevel(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    updatedAt = models.DateTimeField(default=timezone.now)
+    createdAt = models.DateTimeField(editable=False)
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.createdAt = timezone.now()
+        self.updatedAt = timezone.now()
+        return super(CompetenceLevel, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name_plural = "Competence Levels"
 
     def __str__(self):
         return self.name
@@ -24,11 +46,11 @@ class TopLevelCompetence(models.Model):
 
 
 
-
-class MidLevelCompetence(models.Model):
+class Competence(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    parentCompetence = models.ForeignKey(TopLevelCompetence, on_delete=models.CASCADE)
+    competenceCategory = models.ForeignKey(CompetenceCategory, on_delete=models.CASCADE)
+    competenceLevel = models.ForeignKey(CompetenceLevel, on_delete=models.SET_DEFAULT, default=1)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
@@ -37,33 +59,10 @@ class MidLevelCompetence(models.Model):
         if not self.id:
             self.createdAt = timezone.now()
         self.updatedAt = timezone.now()
-        return super(MidLevelCompetence, self).save(*args, **kwargs)
+        return super(Competence, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name_plural = "Mid Level Competences"
+        verbose_name_plural = "Competences"
     
-    def __str__(self):
-        return self.name
-
-
-
-
-class LowLevelCompetence(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    parentCompetence = models.ForeignKey(MidLevelCompetence, on_delete=models.CASCADE)
-    updatedAt = models.DateTimeField(default=timezone.now)
-    createdAt = models.DateTimeField(editable=False)
-
-    def save(self, *args, **kwargs):
-        ''' On save, update timestamps '''
-        if not self.id:
-            self.createdAt = timezone.now()
-        self.updatedAt = timezone.now()
-        return super(LowLevelCompetence, self).save(*args, **kwargs)
-
-    class Meta:
-        verbose_name_plural = "Low Level Competences"
-
     def __str__(self):
         return self.name
