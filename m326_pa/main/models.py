@@ -50,7 +50,7 @@ class MidLevelCompetence(models.Model):
 class LowLevelCompetence(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    midlevelkompetenz = models.ForeignKey(MidLevelCompetence, on_delete=models.CASCADE)
+    parentCompetence = models.ForeignKey(MidLevelCompetence, on_delete=models.CASCADE)
     updatedAt = models.DateTimeField()
     createdAt = models.DateTimeField(editable=False)
 
