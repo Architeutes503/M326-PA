@@ -1,10 +1,11 @@
+from email.policy import default
 from django.db import models
 from django.utils import timezone
 
 class TopLevelCompetence(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    updatedAt = models.DateTimeField()
+    updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
     def save(self, *args, **kwargs):
@@ -28,7 +29,7 @@ class MidLevelCompetence(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     parentCompetence = models.ForeignKey(TopLevelCompetence, on_delete=models.CASCADE)
-    updatedAt = models.DateTimeField()
+    updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
     def save(self, *args, **kwargs):
@@ -51,7 +52,7 @@ class LowLevelCompetence(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     parentCompetence = models.ForeignKey(MidLevelCompetence, on_delete=models.CASCADE)
-    updatedAt = models.DateTimeField()
+    updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
     def save(self, *args, **kwargs):
