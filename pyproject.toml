@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "m150-pa"
+name = "m326-pa"
 version = "0.1.0"
 description = ""
 authors = ["Architeutes <architeutes440@gmail.com>"]
 readme = "README.md"
-packages = [{include = "m150_pa"}]
+packages = [{include = "m326_pa"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
