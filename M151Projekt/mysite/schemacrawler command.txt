@@ -1,0 +1,1 @@
+schemacrawler --server=sqlite --database=db.sqlite3 --info-level=standard --command=schema --output-file=output.png

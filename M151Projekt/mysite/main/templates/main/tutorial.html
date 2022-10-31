@@ -1,0 +1,35 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+
+    <div class="row">
+
+        <div class="col s12, m8, l8">
+            <h3>{{tutorial.tutorialTitle}}</h3>
+            <p style="font-size:70%">Published {{tutorial.tutorialPublished}}</p>
+            {{tutorial.tutorialContent|safe}}
+        </div>
+
+        <div class="col s12 m4 l4">
+            <ul class="collapsible popout">
+                {% for tutorial in tutorialsFromSeries %}
+                    {% if forloop.counter0 == thisTutorialIndex %}
+                        <li class="active">
+                            <div class="collapsible-header">{{tutorial.tutorialTitle}}<br>(currently viewing)</div>
+                        </li>
+                    {% else %}
+                        <li>
+                            <div class="collapsible-header">{{tutorial.tutorialTitle}}</div>
+                            <div class="collapsible-body">
+                                <p><a href="/{{tutorial.tutorialSlug}}"><button class="btn waves-effect waves-light right-align" style="background-color:yellow; color:black">Go</button></a></p>
+
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+{% endblock %}

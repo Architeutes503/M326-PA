@@ -1,0 +1,20 @@
+{% extends 'main/header.html' %}
+
+{% block content %}
+
+    <div class="row">
+        {% for cat in Categories %}
+            <div class="col s12 m6 l4">
+                <a href="{{cat.categorySlug}}", style="color:#000">
+                    <div class="card amber darken-2 hoverable">
+                        <div class="card-content black-text">
+                            <div class="card-title">{{cat.tutorialCategory}}</div>
+                            <!--<p style="font-size:70%">Published {{tut.tutorial_published}}</p>-->
+                            <p>{{cat.categorySummary}}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
