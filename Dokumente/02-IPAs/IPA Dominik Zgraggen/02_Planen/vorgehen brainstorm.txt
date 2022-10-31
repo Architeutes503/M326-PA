@@ -1,0 +1,33 @@
+- auflisten aller Tasks (grob)
+- Task-groups mit zugehörigen Tasks
+- Meilensteine und Abhängigkeiten 
+- Soll [h] für Task schätzen
+- Geplanter Ablauf: Task [h] auf Tag planen
+- während IPA ist [h] eintragen
+
+
+
+
+Tätigkeiten und Meilensteine finden und beschreiben
+Zeitplan (soll) mit Geplantem Ablauf 
+
+Zeitplan (ist) einfügen
+
+Akzeptanz testfälle ermitteln
+
+GUI Themen finden
+GUI Themen Vorschläge
+GUI Entscheiden
+
+
+Oberfläche mit GUIDE erstellen inkl. Benennung 
+Coding1: Event/Callback-functions implementieren
+Coding2: Einbinden des bestehenden Codes zur Simulierung
+Coding3: Usability improve
+White-Box Testfälle ermitteln
+Coding4: Error-Handling
+Help-Funktion erstellen
+
+Kontrolle
+White-Box-Test durchführen
+Akzeptanztest durchführen

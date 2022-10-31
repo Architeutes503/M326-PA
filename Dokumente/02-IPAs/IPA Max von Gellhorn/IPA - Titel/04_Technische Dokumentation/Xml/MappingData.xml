@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MappingData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<MappingName MapId="1">
+		<Names MapCompName="Project Manager" MapFuncName="Create Project" />
+	</MappingName>
+	<MappingName MapId="2">
+		<Names MapCompName="Project Manager" MapFuncName="Delete Project" />
+	</MappingName>
+	<MappingName MapId="13">
+		<Names MapCompName="Point Configurator" MapFuncName="Create Datapoint" />
+	</MappingName>
+	<MappingName MapId="24">
+		<Names MapCompName="Network Configurator" MapFuncName="Run Node Setup" />
+	</MappingName>
+</MappingData>

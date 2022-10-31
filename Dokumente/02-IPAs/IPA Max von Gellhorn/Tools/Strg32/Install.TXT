@@ -1,0 +1,11 @@
+hus - Struktogrammer
+====================
+
+Der Struktogrammer muss nicht speziell installiert werden. 
+Nötige Registrierungseinträge werden jeweils beim Verlassen des Programmes
+neu geschrieben.
+
+Achtung : Die Help-Datei ist nicht auf dem neusten Stand! Sie muss im gleichen
+Verzeichnis wie die Applikation stehen.
+
+								6.2.2000 hus

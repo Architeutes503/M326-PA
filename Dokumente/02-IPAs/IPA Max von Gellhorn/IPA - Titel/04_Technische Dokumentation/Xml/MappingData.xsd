@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by Sinisa Tanasic (Siemens Schweiz AG) -->
+<xs:schema xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="MappingData">
+		<xs:annotation>
+			<xs:documentation>root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MappingName">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Names">
+								<xs:complexType>
+									<xs:attribute name="MapCompName" type="xs:string" use="required"/>
+									<xs:attribute name="MapFuncName" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Component" type="xs:string"/>
+						<xs:attribute name="Function" type="xs:string"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

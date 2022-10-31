@@ -1,0 +1,34 @@
+Sub setUsedVariables()
+
+
+    'set variables for EDE
+    Set edeSheet = ActiveWorkbook.Sheets("EDE")
+        With edeSheet
+            lastEntryNameEDE = .Cells(Rows.Count, 4).End(xlUp).Row 'last entrie in row, from objectsname because there always an entry not like the select range
+            Set rngSelectEDE = .range(.Cells(8, 1), .Cells(lastEntryNameEDE, 1))
+        End With
+
+
+    
+    'set variables for spec devices
+    Set devSheet = ActiveWorkbook.Sheets("Spec-Devices")
+        With devSheet
+            lastEntryDevInst = .Cells(Rows.Count, 1).End(xlUp).Row
+            Set rngDevInst = .range(.Cells(20, 1), .Cells(lastEntryDevInst, 2))
+        End With
+    
+
+
+    'set variables for spec objects
+    Set aSheet = ActiveWorkbook.ActiveSheet
+        With aSheet
+            'lastEntry in range objectname (from EDE - only objectname entires exists) look for the last entry
+            'lastEntryObjName = Range("ctl_InputFields")
+            lastEntryObjName = .Cells(Rows.Count, 5).End(xlUp).Row
+            lastEntryAliasName = .Cells(Rows.Count, 2).End(xlUp).Row
+            Set rngSelectObj = .range(.Cells(13, 1), .Cells(lastEntryObjName, 1))
+            Set rngSelectAlias = .range(.Cells(13, 1), .Cells(lastEntryAliasName, 1))
+        End With
+
+
+End Sub
