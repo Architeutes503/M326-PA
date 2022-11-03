@@ -65,6 +65,7 @@ class Job(models.Model):
 
 
 
+
 class Ressource(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)

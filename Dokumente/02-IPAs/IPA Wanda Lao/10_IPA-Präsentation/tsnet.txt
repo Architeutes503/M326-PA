@@ -1,9 +1,0 @@
-
-TsNet ist ein PC-laufendes Softwarepaket bestehend aus einem Test-Spezifikationsteil (Excel-basiert
-Vorlage) und ein Laufzeitteil (Testbetrieb und BACnet-Stack)
-TsNet ermöglicht die Ausführung von Applikationstests mit Hardware-in-the-Loop durch Auslösen von Variablen über
-BACnet, die Reaktion des Reglers über BACnet zu lesen und mit den erwarteten Ergebnissen zu vergleichen.
-TsNet im Anwendungs-Test wird in der Regel mit einem Test-Rack kombiniert, so dass zusätzliche Triggerung
-Über physikalische Eingänge und einfache Überwachung der physikalischen Ausgangssignale.
-TsNet wird vor allem für Open-Loop-Tests eingesetzt, kann aber mit einem Raum kombiniert werden
-Simulation auf einem Controller.
