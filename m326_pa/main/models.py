@@ -92,7 +92,7 @@ class Competence(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     ressources = models.ManyToManyField(Ressource, blank=True)
-    competenceCategory = models.ForeignKey(CompetenceCategory, on_delete=models.CASCADE)
+    competenceCategory = models.ForeignKey(CompetenceCategory, on_delete=models.CASCADE, default=1)
     competenceLevel = models.ForeignKey(CompetenceLevel, on_delete=models.SET_DEFAULT, default=1)
     job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True, blank=True)
     updatedAt = models.DateTimeField(default=timezone.now)
@@ -135,9 +135,31 @@ class Teacher(models.Model):
 
 
 
+class CompetenceProfile(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True, default=1)
+    updatedAt = models.DateTimeField(default=timezone.now)
+    createdAt = models.DateTimeField(editable=False)
+
+    def save(self, *args, **kwargs,):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.createdAt = timezone.now()
+        self.updatedAt = timezone.now()
+        return super(CompetenceProfile, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name_plural = "Competence Profiles"
+
+    def __str__(self):
+        return self.name
+
+
+
 class AvailableCompetence(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    competence = models.ForeignKey(Competence, on_delete=models.CASCADE)
+    competence = models.ForeignKey(Competence, on_delete=models.CASCADE, default=1)
+    CompetenceProfile = models.ForeignKey(CompetenceProfile, on_delete=models.CASCADE)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
@@ -156,9 +178,9 @@ class AvailableCompetence(models.Model):
 
 
 class AchievedCompetence(models.Model):
-    competence = models.ForeignKey(Competence, on_delete=models.CASCADE)
+    competence = models.ForeignKey(Competence, on_delete=models.CASCADE, default=1)
     achievedAt = models.DateTimeField(default=timezone.now)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True)
+    competenceProfile = models.ForeignKey(CompetenceProfile, on_delete=models.CASCADE, default=1)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
@@ -178,9 +200,9 @@ class AchievedCompetence(models.Model):
 
 
 class PlannedCompetences(models.Model):
-    competence = models.ForeignKey(Competence, on_delete=models.CASCADE)
+    competence = models.ForeignKey(Competence, on_delete=models.CASCADE, default=1)
     plannedAt = models.DateTimeField(default=timezone.now)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True)
+    competenceProfile = models.ForeignKey(CompetenceProfile, on_delete=models.CASCADE, default=1)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
@@ -196,28 +218,3 @@ class PlannedCompetences(models.Model):
 
     def __str__(self):
         return self.competence.name
-
-
-
-class CompetenceProfile(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
-    competences = models.ManyToManyField(AvailableCompetence, blank=True)
-    achievedCompetences = models.ManyToManyField(AchievedCompetence, blank=True)
-    plannedCompetences = models.ManyToManyField(PlannedCompetences, blank=True)
-    updatedAt = models.DateTimeField(default=timezone.now)
-    createdAt = models.DateTimeField(editable=False)
-
-    def save(self, *args, **kwargs,):
-        ''' On save, update timestamps '''
-        if not self.id:
-            self.createdAt = timezone.now()
-        self.updatedAt = timezone.now()
-        return super(CompetenceProfile, self).save(*args, **kwargs)
-
-    class Meta:
-        verbose_name_plural = "Competence Profiles"
-
-    def __str__(self):
-        return self.name
