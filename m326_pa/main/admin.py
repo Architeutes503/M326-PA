@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CompetenceCategory, CompetenceLevel, Competence, Ressource, Job, CompetenceProfile, AchievedCompetence, PlannedCompetences, Teacher
+from .models import CompetenceCategory, CompetenceLevel, Competence, Ressource, Job, CompetenceProfile, AchievedCompetence, PlannedCompetences, Teacher, InviteCode
 
 #also show id in admin
 class CompetenceCategoryAdmin(admin.ModelAdmin):
@@ -57,6 +57,13 @@ class TeacherAdmin(admin.ModelAdmin):
     list_per_page = 25
 
 
+class InviteCodeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'code', 'used', 'usedBy', 'createdAt', 'usedAt')
+    list_display_links = ('id', 'code')
+    search_fields = ('code', 'used')
+    list_per_page = 25
+
+
 admin.site.register(CompetenceCategory, CompetenceCategoryAdmin)
 admin.site.register(CompetenceLevel, CompetenceLevelAdmin)
 admin.site.register(Competence, CompetenceAdmin)
@@ -66,3 +73,4 @@ admin.site.register(CompetenceProfile, CompetenceProfileAdmin)
 admin.site.register(AchievedCompetence, AchievedCompetenceAdmin)
 admin.site.register(PlannedCompetences, PlannedCompetencesAdmin)
 admin.site.register(Teacher, TeacherAdmin)
+admin.site.register(InviteCode, InviteCodeAdmin)

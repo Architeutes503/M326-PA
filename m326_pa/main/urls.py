@@ -17,6 +17,13 @@ from django.urls import path
 from . import views
 
 
+app_name = "main"
+
+
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", views.Homepage, name="homepage"),
+    path("register/", views.RegisterRequest, name="register"),
+    path("logout/", views.LogoutRequest, name="logout"),
+    path("login/", views.LoginRequest, name="login"),
+    path("account/", views.AccountRequest, name="account"),
 ]

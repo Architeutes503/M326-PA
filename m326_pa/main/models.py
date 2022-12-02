@@ -5,6 +5,39 @@ from django.utils import timezone
 
 
 
+
+
+
+class InviteCode(models.Model):
+    code = models.CharField(max_length=255, unique=True, blank=True)
+    used = models.BooleanField(default=False)
+    usedBy = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
+    createdAt = models.DateTimeField(default=timezone.now)
+    usedAt = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.code
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = self.generateCode()
+        super(InviteCode, self).save(*args, **kwargs)
+
+    def generateCode(self):
+        import random
+        import string
+        length = 10
+        lettersAndDigits = string.ascii_letters + string.digits
+        return ''.join(random.choice(lettersAndDigits) for _ in range(length))
+
+    def use(self, user):
+        self.used = True
+        self.usedBy = user
+        self.usedAt = timezone.now()
+        self.save()
+
+
+
 class CompetenceCategory(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
