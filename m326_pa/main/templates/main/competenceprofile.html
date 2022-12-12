@@ -1,0 +1,50 @@
+{% extends "main/header.html" %} 
+
+{% block content %}
+<div>
+<div class="row">
+  <div class="col s12 m6 l70">
+      <div class="card amber darken-2 hoverable">
+        <div class="card-content black-text">
+          <div class="card-title">Available Competences: {{Competences.count}}</div>
+          {% for competence in Competences %}
+            <p>{{competence}}</p>
+          {% endfor %}
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+
+<div>
+<div class="row">
+  <div class="col s12 m6 l70">
+      <div class="card amber darken-2 hoverable">
+        <div class="card-content black-text">
+          <div class="card-title">Planned Competences: {{PlannedCompetences.count}}</div>
+          {% for competence in PlannedCompetences %}
+            <p>{{competence}}</p>
+          {% endfor %}
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+
+<div>
+<div class="row">
+  <div class="col s12 m6 l70">
+      <div class="card amber darken-2 hoverable">
+        <div class="card-content black-text">
+          <div class="card-title">Achieved Competences: {{AchievedCompetences.count}}</div>
+          {% for competence in achievedCompetences %}
+            <p>{{competence}}</p>
+          {% endfor %}
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+{% endblock %}
