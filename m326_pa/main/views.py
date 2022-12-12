@@ -8,14 +8,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import AccountForm, UserForm
 from django.http import HttpResponseNotFound
-from .models import InviteCode
+from .models import InviteCode, CompetenceProfile, Teacher, Competence, PlannedCompetences, AchievedCompetence
 
-
-
-
-def Homepage(request):
-    return render(request,
-                  'main/home.html')
 
 
 
@@ -94,3 +88,38 @@ def LoginRequest(request):
     return(render(request,
                   'main/login.html',
                   {'form': form}))
+
+
+
+def Homepage(request):
+    if not request.user.is_authenticated:
+        return redirect("main:login")
+    if teacher := Teacher.objects.filter(user=request.user):
+        if competenceProfile := CompetenceProfile.objects.filter(teacher=teacher[0]):
+            return render(request,
+                          'main/home.html',
+                          {'CompetenceProfile': competenceProfile[0], 'Teacher': teacher[0]})
+        #competence profile object
+        competenceProfile = CompetenceProfile.objects.create(teacher=teacher[0], name=f"{teacher[0].user.username}'s competence profile", description=f"Competence profile of {teacher[0].user.username}")
+        return render(request,
+                        'main/home.html',
+                        {'CompetenceProfile': competenceProfile, 'Teacher': teacher[0]})
+    return render(request,
+                'main/home.html')
+
+
+def CompetenceProfileRequest(request):
+    if not request.user.is_authenticated:
+        return redirect("main:login")
+    if teacher := Teacher.objects.filter(user=request.user):
+        if competenceProfile := CompetenceProfile.objects.filter(teacher=teacher[0]):
+            job = teacher[0].job
+            #all competences = all competences from db where job is not set or job is set to teacher's job
+            allCompetences = Competence.objects.filter(job__isnull=True) | Competence.objects.filter(job=job)
+            #get all planned competences from the db where competence profile is the competence profile of the teacher
+            plannedCompetences = PlannedCompetences.objects.filter(competenceProfile=competenceProfile[0])
+            #get all achieved competences from the db where competence profile is the competence profile of the teacher
+            achievedCompetences = AchievedCompetence.objects.filter(competenceProfile=competenceProfile[0])
+            return render(request,
+                            'main/competenceprofile.html',
+                            {'Competences': allCompetences, 'PlannedCompetences': plannedCompetences, 'AchievedCompetences': achievedCompetences})

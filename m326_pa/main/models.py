@@ -2,7 +2,7 @@ from tabnanny import check
 from xml.etree.ElementInclude import LimitedRecursiveIncludeError
 from django.db import models
 from django.utils import timezone
-
+from django.contrib.auth.models import User
 
 
 
@@ -148,8 +148,9 @@ class Competence(models.Model):
 
 class Teacher(models.Model):
     name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
     job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
@@ -171,7 +172,7 @@ class Teacher(models.Model):
 class CompetenceProfile(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, blank=True, default=1)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True, blank=True, default=1)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 

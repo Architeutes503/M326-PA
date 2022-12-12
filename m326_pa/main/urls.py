@@ -26,4 +26,5 @@ urlpatterns = [
     path("logout/", views.LogoutRequest, name="logout"),
     path("login/", views.LoginRequest, name="login"),
     path("account/", views.AccountRequest, name="account"),
+    path("competenceprofile/", views.CompetenceProfileRequest, name="competenceprofile"),
 ]
