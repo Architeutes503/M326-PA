@@ -23,8 +23,9 @@
       <div class="card amber darken-2 hoverable">
         <div class="card-content black-text">
           <div class="card-title">Planned Competences: {{PlannedCompetences.count}}</div>
-          {% for competence in PlannedCompetences %}
-            <p>{{competence}}</p>
+          {% for plannedCompetence in PlannedCompetences %}
+            <p>{{plannedCompetence}}</p>
+            <a href="/addplannedcompetence" class="waves-effect waves-light btn green"><i class="material-icons">add</i></a>
           {% endfor %}
         </div>
       </div>
@@ -39,9 +40,10 @@
       <div class="card amber darken-2 hoverable">
         <div class="card-content black-text">
           <div class="card-title">Achieved Competences: {{AchievedCompetences.count}}</div>
-          {% for competence in achievedCompetences %}
-            <p>{{competence}}</p>
+          {% for achievedCompetence in AchievedCompetences %}
+            <p>{{achievedCompetence}}</p>
           {% endfor %}
+          <a href="/addachievedcompetence" class="waves-effect waves-light btn green"><i class="material-icons">add</i></a>
         </div>
       </div>
     </a>

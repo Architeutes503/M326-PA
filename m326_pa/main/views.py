@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import AccountForm, UserForm
+from .forms import AccountForm, UserForm, PlannedCompetenceForm, AchievedCompetenceForm
 from django.http import HttpResponseNotFound
 from .models import InviteCode, CompetenceProfile, Teacher, Competence, PlannedCompetences, AchievedCompetence
 
@@ -19,9 +19,9 @@ def RegisterRequest(request):
         form = UserForm(request.POST)
         if form.is_valid():
             codes = InviteCode.objects.filter(used=False)
-            if form.cleaned_data['invite_code'] in codes.values_list('code', flat=True):
+            if form.cleaned_data['inviteCode'] in codes.values_list('code', flat=True):
                 user = form.save()
-                inviteCode = InviteCode.objects.get(code=form.cleaned_data['invite_code'])
+                inviteCode = InviteCode.objects.get(code=form.cleaned_data['inviteCode'])
                 inviteCode.use(user)
                 username = form.cleaned_data.get('username')
                 messages.success(request, f"New account created: {username}")
@@ -123,3 +123,41 @@ def CompetenceProfileRequest(request):
             return render(request,
                             'main/competenceprofile.html',
                             {'Competences': allCompetences, 'PlannedCompetences': plannedCompetences, 'AchievedCompetences': achievedCompetences})
+
+
+
+def AddPlannedCompetenceRequest(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect("main:login")
+        form = PlannedCompetenceForm(request.POST)
+        if form.is_valid():
+            plannedCompetence = form.save(request)
+            messages.success(request, f"Planned competence added: {plannedCompetence.competence.name}")
+            return redirect("main:competenceprofile")
+        else:
+            messages.error(request, "Invalid planned competence")
+
+    form = PlannedCompetenceForm()
+    return(render(request,
+                    'main/addcompetence.html',
+                    {'form': form}))
+
+
+
+def AddAchievedCompetenceRequest(request):
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect("main:login")
+        form = AchievedCompetenceForm(request.POST)
+        if form.is_valid():
+            plannedCompetence = form.save(request)
+            messages.success(request, f"Planned competence added: {plannedCompetence.competence.name}")
+            return redirect("main:competenceprofile")
+        else:
+            messages.error(request, "Invalid planned competence")
+
+    form = AchievedCompetenceForm()
+    return(render(request,
+                    'main/addcompetence.html',
+                    {'form': form}))

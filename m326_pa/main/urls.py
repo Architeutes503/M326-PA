@@ -27,4 +27,6 @@ urlpatterns = [
     path("login/", views.LoginRequest, name="login"),
     path("account/", views.AccountRequest, name="account"),
     path("competenceprofile/", views.CompetenceProfileRequest, name="competenceprofile"),
+    path("addplannedcompetence/", views.AddPlannedCompetenceRequest, name="addplannedcompetence"),
+    path("addachievedcompetence/", views.AddAchievedCompetenceRequest, name="addachievedcompetence"),
 ]
