@@ -8,6 +8,16 @@ from django.contrib.auth.models import User
 
 
 
+
+def GenerateRandom():
+        import random
+        import string
+        length = 10
+        lettersAndDigits = string.ascii_letters + string.digits
+        return ''.join(random.choice(lettersAndDigits) for _ in range(length))
+
+
+
 class InviteCode(models.Model):
     code = models.CharField(max_length=255, unique=True, blank=True)
     used = models.BooleanField(default=False)
@@ -20,15 +30,8 @@ class InviteCode(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.code:
-            self.code = self.generateCode()
+            self.code = GenerateRandom()
         super(InviteCode, self).save(*args, **kwargs)
-
-    def generateCode(self):
-        import random
-        import string
-        length = 10
-        lettersAndDigits = string.ascii_letters + string.digits
-        return ''.join(random.choice(lettersAndDigits) for _ in range(length))
 
     def use(self, user):
         self.used = True
@@ -128,6 +131,7 @@ class Competence(models.Model):
     competenceCategory = models.ForeignKey(CompetenceCategory, on_delete=models.CASCADE, default=1)
     competenceLevel = models.ForeignKey(CompetenceLevel, on_delete=models.SET_DEFAULT, default=1)
     job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True, blank=True)
+    slug = models.SlugField(max_length=200, unique=True)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
@@ -135,6 +139,8 @@ class Competence(models.Model):
         ''' On save, update timestamps '''
         if not self.id:
             self.createdAt = timezone.now()
+            if not self.slug:
+                self.slug = GenerateRandom()
         self.updatedAt = timezone.now()
         return super(Competence, self).save(*args, **kwargs)
 
@@ -215,6 +221,7 @@ class AchievedCompetence(models.Model):
     competence = models.ForeignKey(Competence, on_delete=models.CASCADE, default=1)
     achievedAt = models.DateTimeField(default=timezone.now)
     competenceProfile = models.ForeignKey(CompetenceProfile, on_delete=models.CASCADE, default=1)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
@@ -222,8 +229,11 @@ class AchievedCompetence(models.Model):
         ''' On save, update timestamps '''
         if not self.id:
             self.createdAt = timezone.now()
+            if not self.slug:
+                self.slug = GenerateRandom()
         self.updatedAt = timezone.now()
         return super(AchievedCompetence, self).save(*args, **kwargs)
+
 
     class Meta:
         verbose_name_plural = "Achieved Competences"
@@ -237,6 +247,7 @@ class PlannedCompetences(models.Model):
     competence = models.ForeignKey(Competence, on_delete=models.CASCADE, default=1)
     plannedAt = models.DateTimeField(default=timezone.now)
     competenceProfile = models.ForeignKey(CompetenceProfile, on_delete=models.CASCADE, default=1)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
@@ -244,8 +255,11 @@ class PlannedCompetences(models.Model):
         ''' On save, update timestamps '''
         if not self.id:
             self.createdAt = timezone.now()
+            if not self.slug:
+                self.slug = GenerateRandom()
         self.updatedAt = timezone.now()
         return super(PlannedCompetences, self).save(*args, **kwargs)
+
 
     class Meta:
         verbose_name_plural = "Planned Competences"

@@ -2,7 +2,7 @@ from email.policy import default
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Job, Teacher, Competence, PlannedCompetences, CompetenceProfile, AchievedCompetence
+from .models import Job, Teacher, Competence, PlannedCompetences, CompetenceProfile, AchievedCompetence, CompetenceLevel, CompetenceCategory
 import datetime
 
 class UserForm(UserCreationForm):
@@ -58,37 +58,16 @@ class AccountForm(forms.ModelForm):
         return user
 
 
-
-class PlannedCompetenceForm(forms.ModelForm):
-    competence = forms.ModelChoiceField(queryset=Competence.objects.all(), required=True)
+class AddPlannedCompetenceForm(forms.ModelForm):
     day = forms.IntegerField(required=True)
     month = forms.IntegerField(required=True)
     year = forms.IntegerField(required=True)
     hour = forms.IntegerField(required=True)
     minute = forms.IntegerField(required=True)
-    
+
     class Meta:
         model = PlannedCompetences
-        fields = ['competence', 'day', 'month', 'year', 'hour', 'minute']
+        fields = ['day', 'month', 'year', 'hour', 'minute']
 
-    def save(self, request, commit=True):
-        teacher = Teacher.objects.get(user=request.user)
-        competenceProfile = CompetenceProfile.objects.get(teacher=teacher)
-        date = datetime.datetime(self.cleaned_data['year'], self.cleaned_data['month'], self.cleaned_data['day'], self.cleaned_data['hour'], self.cleaned_data['minute'])
-        return PlannedCompetences.objects.create(competence=self.cleaned_data['competence'], competenceProfile=competenceProfile, plannedAt=date)
-
-
-
-class AchievedCompetenceForm(forms.ModelForm):
-    competence = forms.ModelChoiceField(queryset=Competence.objects.all(), required=True)
-    
-    class Meta:
-        model = AchievedCompetence
-        fields = ['competence']
-
-    def save(self, request, commit=True):
-        teacher = Teacher.objects.get(user=request.user)
-        competenceProfile = CompetenceProfile.objects.get(teacher=teacher)
-        if plannedCompetence := PlannedCompetences.objects.filter(competence=self.cleaned_data['competence'], competenceProfile=competenceProfile):
-            plannedCompetence.delete()
-        return AchievedCompetence.objects.create(competence=self.cleaned_data['competence'], competenceProfile=competenceProfile)
+    def save(self, competence, competenceProfile, commit=True):
+        return PlannedCompetences.objects.create(competence=competence, competenceProfile=competenceProfile, plannedAt=datetime.datetime(self.cleaned_data['year'], self.cleaned_data['month'], self.cleaned_data['day'], self.cleaned_data['hour'], self.cleaned_data['minute']))

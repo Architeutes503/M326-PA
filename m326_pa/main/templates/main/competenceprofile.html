@@ -8,7 +8,7 @@
         <div class="card-content black-text">
           <div class="card-title">Available Competences: {{Competences.count}}</div>
           {% for competence in Competences %}
-            <p>{{competence}}</p>
+            <p>{{competence}} <a href="addplannedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Plan</i></a> <a href="addachievedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Achieve</i></a></p>
           {% endfor %}
         </div>
       </div>
@@ -24,8 +24,7 @@
         <div class="card-content black-text">
           <div class="card-title">Planned Competences: {{PlannedCompetences.count}}</div>
           {% for plannedCompetence in PlannedCompetences %}
-            <p>{{plannedCompetence}}</p>
-            <a href="/addplannedcompetence" class="waves-effect waves-light btn green"><i class="material-icons">add</i></a>
+            <p>{{plannedCompetence}} <a href="addachievedcompetence/{{plannedCompetence.competence.slug}}" class="waves-effect waves-light btn Green"><i class="material-icons">Achieve</i></a> <a href="/removecompetence/{{plannedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a> </p>
           {% endfor %}
         </div>
       </div>
@@ -41,9 +40,8 @@
         <div class="card-content black-text">
           <div class="card-title">Achieved Competences: {{AchievedCompetences.count}}</div>
           {% for achievedCompetence in AchievedCompetences %}
-            <p>{{achievedCompetence}}</p>
+            <p>{{achievedCompetence}} <a href="/removecompetence/{{achievedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a> </p>
           {% endfor %}
-          <a href="/addachievedcompetence" class="waves-effect waves-light btn green"><i class="material-icons">add</i></a>
         </div>
       </div>
     </a>

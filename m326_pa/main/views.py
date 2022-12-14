@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import AccountForm, UserForm, PlannedCompetenceForm, AchievedCompetenceForm
+from .forms import AccountForm, UserForm, AddPlannedCompetenceForm
 from django.http import HttpResponseNotFound
 from .models import InviteCode, CompetenceProfile, Teacher, Competence, PlannedCompetences, AchievedCompetence
 
@@ -125,39 +125,65 @@ def CompetenceProfileRequest(request):
                             {'Competences': allCompetences, 'PlannedCompetences': plannedCompetences, 'AchievedCompetences': achievedCompetences})
 
 
+#slug function that delets planned or achieved competence from the db
+def DeleteCompetenceRequest(request, slug):
+    if not request.user.is_authenticated:
+        return redirect("main:login")
+    if competence := PlannedCompetences.objects.filter(slug=slug):
+        competence.delete()
+        messages.success(request, "Planned competence deleted")
+    elif competence := AchievedCompetence.objects.filter(slug=slug):
+        competence.delete()
+        messages.success(request, "Achieved competence deleted")
+    else:
+        messages.error(request, "Competence not found")
+    return redirect("main:competenceprofile")
 
-def AddPlannedCompetenceRequest(request):
+def AddPlannedCompetenceRequest(request, slug):
+    if not request.user.is_authenticated:
+        return redirect("main:login")
     if request.method == 'POST':
-        if not request.user.is_authenticated:
-            return redirect("main:login")
-        form = PlannedCompetenceForm(request.POST)
-        if form.is_valid():
-            plannedCompetence = form.save(request)
-            messages.success(request, f"Planned competence added: {plannedCompetence.competence.name}")
-            return redirect("main:competenceprofile")
+        if teacher := Teacher.objects.filter(user=request.user):
+            if competenceProfile := CompetenceProfile.objects.filter(teacher=teacher[0]):
+                if competence := Competence.objects.filter(slug=slug):
+                    if not PlannedCompetences.objects.filter(competenceProfile=competenceProfile[0], competence=competence[0]):
+                        form = AddPlannedCompetenceForm(request.POST)
+                        if form.is_valid():
+                            form.save(competence=competence[0], competenceProfile=competenceProfile[0])
+
+                        messages.success(request, "Planned competence added")
+                    else:
+                        messages.error(request, "Competence already planned")
+                else:
+                    messages.error(request, "Competence not found")
+            else:
+                messages.error(request, "Competence profile not found")
         else:
-            messages.error(request, "Invalid planned competence")
+            messages.error(request, "Teacher not found")
+        return redirect("main:competenceprofile")
 
-    form = PlannedCompetenceForm()
-    return(render(request,
-                    'main/addcompetence.html',
-                    {'form': form}))
-
+    form = AddPlannedCompetenceForm()
+    return render(request, 'main/addcompetence.html', {'form': form})
 
 
-def AddAchievedCompetenceRequest(request):
-    if request.method == 'POST':
-        if not request.user.is_authenticated:
-            return redirect("main:login")
-        form = AchievedCompetenceForm(request.POST)
-        if form.is_valid():
-            plannedCompetence = form.save(request)
-            messages.success(request, f"Planned competence added: {plannedCompetence.competence.name}")
-            return redirect("main:competenceprofile")
+
+def AddAchievedCompetenceRequest(request, slug):
+    if not request.user.is_authenticated:
+        return redirect("main:login")
+    if teacher := Teacher.objects.filter(user=request.user):
+        if competenceProfile := CompetenceProfile.objects.filter(teacher=teacher[0]):
+            if competence := Competence.objects.filter(slug=slug):
+                if not AchievedCompetence.objects.filter(competenceProfile=competenceProfile[0], competence=competence[0]):
+                    achievedCompetence = AchievedCompetence.objects.create(competenceProfile=competenceProfile[0], competence=competence[0])
+                    if plannedCompetence := PlannedCompetences.objects.filter(competenceProfile=competenceProfile[0], competence=competence[0]):
+                        plannedCompetence.delete()
+                    messages.success(request, "Achieved competence added")
+                else:
+                    messages.error(request, "Competence already added")
+            else:
+                messages.error(request, "Competence not found")
         else:
-            messages.error(request, "Invalid planned competence")
-
-    form = AchievedCompetenceForm()
-    return(render(request,
-                    'main/addcompetence.html',
-                    {'form': form}))
+            messages.error(request, "Competence profile not found")
+    else:
+        messages.error(request, "Teacher not found")
+    return redirect("main:competenceprofile")
