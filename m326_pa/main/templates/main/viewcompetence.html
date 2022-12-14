@@ -1,0 +1,39 @@
+{% extends "main/header.html" %} 
+
+{% block content %}
+<div class="row">
+  <div class="col s12 m8 l90">
+      <div class="card amber darken-2 hoverable">
+        <div class="card-content black-text">
+          <h3>Competence: {{Competence.name}}</h3>
+          <h5>Description: </h5>
+          <p>{{Competence.description}}</p>
+          <h5>Category:</h5>
+          <p>{{Competence.category}}</p>
+          <h5>Level:</h5>
+          <p>{{Competence.level}}</p>
+          <h5>Job:</h5>
+          <p>{{Competence.job}}</p>
+          <br>
+          <br>
+          <h3>Ressources: </h3>
+          {% for ressource in Ressources %}
+            <h6>Name: </h6>
+            <p>{{ressource.name}}</p>
+            <h6>Description: </h6>
+            <p>{{ressource.description}}</p>
+            <h6>Link: </h6>
+            <a href="{{ressource.url}}">URL</a>
+            <br>
+            <a href="/removeressource/{{ressource.slug}}/{{Competence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Delete</i></a>
+            <br><br><br>
+          {% endfor %}
+
+          <a href="/competenceprofile/addressource/{{Competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Add Ressource</i></a>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+</div>
+{% endblock %}

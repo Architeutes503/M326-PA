@@ -2,7 +2,7 @@ from email.policy import default
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Job, Teacher, Competence, PlannedCompetences, CompetenceProfile, AchievedCompetence, CompetenceLevel, CompetenceCategory
+from .models import Job, Teacher, PlannedCompetences, Ressource, Competence
 import datetime
 
 class UserForm(UserCreationForm):
@@ -71,3 +71,23 @@ class AddPlannedCompetenceForm(forms.ModelForm):
 
     def save(self, competence, competenceProfile, commit=True):
         return PlannedCompetences.objects.create(competence=competence, competenceProfile=competenceProfile, plannedAt=datetime.datetime(self.cleaned_data['year'], self.cleaned_data['month'], self.cleaned_data['day'], self.cleaned_data['hour'], self.cleaned_data['minute']))
+
+
+class AddRessourceForm(forms.ModelForm):
+    name = forms.CharField(required=True)
+    description = forms.CharField(required=True)
+    link = forms.CharField(required=True)
+
+    class Meta:
+        model = Ressource
+        fields = ['name', 'description', 'link']
+
+    def save(self, competence, teacher, commit=True):
+        #check if url is a valid url
+        if self.cleaned_data['link'].startswith("http://") or self.cleaned_data['link'].startswith("https://"):
+            if ressource := Ressource.objects.filter(url=self.cleaned_data['link'], competence=competence, teacher=teacher):
+                return False
+            else:
+                return Ressource.objects.create(name=self.cleaned_data['name'], description=self.cleaned_data['description'], url=self.cleaned_data['link'], competence=competence, teacher=teacher)
+        else:
+            return "URL"

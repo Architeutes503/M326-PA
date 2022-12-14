@@ -19,7 +19,7 @@
                 {% if competence.competenceCategory == competenceCategory and competence.competenceLevel == competenceLevel %}
                   <!-- if competence is not planned or achieved -->
                   {% if competence not in PlannedCompetences and competence not in AchievedCompetences %}
-                    <p>{{competence}} <a href="addplannedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Plan</i></a> <a href="addachievedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Achieve</i></a></p>
+                    <p>{{competence}} <a href="addplannedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Plan</i></a> <a href="addachievedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Achieve</i></a><a href="viewcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">View</i></a></p>
                   {% endif %}
                 {% endif %}
               {% endfor %}
@@ -44,7 +44,7 @@
               <h5>{{competenceLevel}} Level:</h5>
               {% for plannedCompetence in PlannedCompetences %}
                 {% if plannedCompetence.competence.competenceCategory == competenceCategory and plannedCompetence.competence.competenceLevel == competenceLevel %}
-                  <p>{{plannedCompetence}} <a href="/removecompetence/{{plannedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a> <a href="addachievedcompetence/{{plannedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Achieve</i></a></p>
+                  <p>{{plannedCompetence}} <a href="/removecompetence/{{plannedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a> <a href="addachievedcompetence/{{plannedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Achieve</i></a><a href="viewcompetence/{{plannedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">View</i></a></p>
                 {% endif %}
               {% endfor %}
             {% endfor %}
@@ -68,7 +68,7 @@
               <h5>{{competenceLevel}} Level:</h5>
               {% for achievedCompetence in AchievedCompetences %}
                 {% if achievedCompetence.competence.competenceCategory == competenceCategory and achievedCompetence.competence.competenceLevel == competenceLevel %}
-                  <p>{{achievedCompetence}} <a href="/removecompetence/{{achievedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a></p>
+                  <p>{{achievedCompetence}} <a href="/removecompetence/{{achievedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a><a href="viewcompetence/{{achievedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">View</i></a></p>
                 {% endif %}
               {% endfor %}
             {% endfor %}

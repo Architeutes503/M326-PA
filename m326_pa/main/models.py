@@ -101,37 +101,13 @@ class Job(models.Model):
 
 
 
-
-class Ressource(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    url = models.URLField(blank=True)
-    updatedAt = models.DateTimeField(default=timezone.now)
-    createdAt = models.DateTimeField(editable=False)
-
-    def save(self, *args, **kwargs):
-        ''' On save, update timestamps '''
-        if not self.id:
-            self.createdAt = timezone.now()
-        self.updatedAt = timezone.now()
-        return super(Ressource, self).save(*args, **kwargs)
-
-    class Meta:
-        verbose_name_plural = "Ressources"
-
-    def __str__(self):
-        return self.name
-
-
-
 class Competence(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    ressources = models.ManyToManyField(Ressource, blank=True)
     competenceCategory = models.ForeignKey(CompetenceCategory, on_delete=models.CASCADE, default=1)
     competenceLevel = models.ForeignKey(CompetenceLevel, on_delete=models.SET_DEFAULT, default=1)
     job = models.ForeignKey(Job, on_delete=models.SET_NULL, null=True, blank=True)
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
 
@@ -266,3 +242,31 @@ class PlannedCompetences(models.Model):
 
     def __str__(self):
         return self.competence.name
+
+
+
+class Ressource(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    url = models.URLField(blank=True)
+    competence = models.ForeignKey(Competence, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    
+    updatedAt = models.DateTimeField(default=timezone.now)
+    createdAt = models.DateTimeField(editable=False)
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.createdAt = timezone.now()
+            if not self.slug:
+                self.slug = GenerateRandom()
+        self.updatedAt = timezone.now()
+        return super(Ressource, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name_plural = "Ressources"
+
+    def __str__(self):
+        return self.name
