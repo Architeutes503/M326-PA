@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import AccountForm, UserForm, AddPlannedCompetenceForm
 from django.http import HttpResponseNotFound
-from .models import InviteCode, CompetenceProfile, Teacher, Competence, PlannedCompetences, AchievedCompetence
+from .models import InviteCode, CompetenceProfile, Teacher, Competence, PlannedCompetences, AchievedCompetence, CompetenceLevel, CompetenceCategory
 
 
 
@@ -108,7 +108,10 @@ def Homepage(request):
                 'main/home.html')
 
 
-def CompetenceProfileRequest(request):
+
+
+
+def CompetenceProfileRequest(request):  # sourcery skip: extract-method
     if not request.user.is_authenticated:
         return redirect("main:login")
     if teacher := Teacher.objects.filter(user=request.user):
@@ -120,9 +123,25 @@ def CompetenceProfileRequest(request):
             plannedCompetences = PlannedCompetences.objects.filter(competenceProfile=competenceProfile[0])
             #get all achieved competences from the db where competence profile is the competence profile of the teacher
             achievedCompetences = AchievedCompetence.objects.filter(competenceProfile=competenceProfile[0])
+            #remove planned and achieved competences from all competences
+            for plannedCompetence in plannedCompetences:
+                allCompetences = allCompetences.exclude(id=plannedCompetence.competence.id)
+            for achievedCompetence in achievedCompetences:
+                allCompetences = allCompetences.exclude(id=achievedCompetence.competence.id)
+
+            competenceCategories = CompetenceCategory.objects.filter(competence__in=allCompetences)
+            competenceLevels = CompetenceLevel.objects.filter(competence__in=allCompetences)
+            #get all categories for planned competences using the plannecCompetence.competence and the competenceCategory.competence
+            plannedCompetenceCategories = CompetenceCategory.objects.filter(competence__in=plannedCompetences.values_list('competence', flat=True))
+            plannedCompetenceLevels = CompetenceLevel.objects.filter(competence__in=plannedCompetences.values_list('competence', flat=True))
+            achievedCompetenceCategories = CompetenceCategory.objects.filter(competence__in=achievedCompetences.values_list('competence', flat=True))
+            achievedCompetenceLevels = CompetenceLevel.objects.filter(competence__in=achievedCompetences.values_list('competence', flat=True))
             return render(request,
                             'main/competenceprofile.html',
-                            {'Competences': allCompetences, 'PlannedCompetences': plannedCompetences, 'AchievedCompetences': achievedCompetences})
+                            {'Competences': allCompetences, 'PlannedCompetences': plannedCompetences, 'AchievedCompetences': achievedCompetences, 'CompetenceCategories': competenceCategories, 'CompetenceLevels': competenceLevels, 'PlannedCompetenceCategories': plannedCompetenceCategories, 'PlannedCompetenceLevels': plannedCompetenceLevels, 'AchievedCompetenceCategories': achievedCompetenceCategories, 'AchievedCompetenceLevels': achievedCompetenceLevels})
+
+
+
 
 
 #slug function that delets planned or achieved competence from the db
