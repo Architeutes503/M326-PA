@@ -18,9 +18,12 @@ class UserForm(UserCreationForm):
     def save(self, commit=True):  # sourcery skip: extract-method
         user = super(UserForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
+        job = self.cleaned_data['job']
+        if job is None:
+            job = Job.objects.get(id=1)
         if commit:
             user.save()
-            teacher = Teacher.objects.create(user=user, job=self.cleaned_data['job'], name = user.username, description = None)
+            teacher = Teacher.objects.create(user=user, job=job, name = user.username, description = None)
         return user
 
 
@@ -46,13 +49,13 @@ class AccountForm(forms.ModelForm):
         else:
             user.email = currentUser.email
         if(self.cleaned_data['firstName'] != ""):
-            user.firstName = self.cleaned_data['firstName']
+            user.first_name = self.cleaned_data['firstName']
         else:
-            user.firstName = currentUser.firstName
+            user.first_name = currentUser.first_name
         if(self.cleaned_data['lastName'] != ""):
-            user.lastName = self.cleaned_data['lastName']
+            user.last_name = self.cleaned_data['lastName']
         else:
-            user.lastName = currentUser.lastName
+            user.last_name = currentUser.last_name
         if commit:
             user.save()
         return user
@@ -71,23 +74,3 @@ class AddPlannedCompetenceForm(forms.ModelForm):
 
     def save(self, competence, competenceProfile, commit=True):
         return PlannedCompetences.objects.create(competence=competence, competenceProfile=competenceProfile, plannedAt=datetime.datetime(self.cleaned_data['year'], self.cleaned_data['month'], self.cleaned_data['day'], self.cleaned_data['hour'], self.cleaned_data['minute']))
-
-
-class AddRessourceForm(forms.ModelForm):
-    name = forms.CharField(required=True)
-    description = forms.CharField(required=True)
-    link = forms.CharField(required=True)
-
-    class Meta:
-        model = Ressource
-        fields = ['name', 'description', 'link']
-
-    def save(self, competence, teacher, commit=True):
-        #check if url is a valid url
-        if self.cleaned_data['link'].startswith("http://") or self.cleaned_data['link'].startswith("https://"):
-            if ressource := Ressource.objects.filter(url=self.cleaned_data['link'], competence=competence, teacher=teacher):
-                return False
-            else:
-                return Ressource.objects.create(name=self.cleaned_data['name'], description=self.cleaned_data['description'], url=self.cleaned_data['link'], competence=competence, teacher=teacher)
-        else:
-            return "URL"

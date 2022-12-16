@@ -250,8 +250,6 @@ class Ressource(models.Model):
     description = models.TextField(blank=True)
     url = models.URLField(blank=True)
     competence = models.ForeignKey(Competence, on_delete=models.CASCADE)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=200, unique=True, blank=True)
     
     updatedAt = models.DateTimeField(default=timezone.now)
     createdAt = models.DateTimeField(editable=False)
@@ -260,8 +258,6 @@ class Ressource(models.Model):
         ''' On save, update timestamps '''
         if not self.id:
             self.createdAt = timezone.now()
-            if not self.slug:
-                self.slug = GenerateRandom()
         self.updatedAt = timezone.now()
         return super(Ressource, self).save(*args, **kwargs)
 

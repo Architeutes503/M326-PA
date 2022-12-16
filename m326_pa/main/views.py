@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import AccountForm, UserForm, AddPlannedCompetenceForm, AddRessourceForm
+from .forms import AccountForm, UserForm, AddPlannedCompetenceForm
 from django.http import HttpResponseNotFound
 from .models import InviteCode, CompetenceProfile, Teacher, Competence, PlannedCompetences, AchievedCompetence, CompetenceLevel, CompetenceCategory, Ressource
 
@@ -136,6 +136,15 @@ def CompetenceProfileRequest(request):  # sourcery skip: extract-method
             plannedCompetenceLevels = CompetenceLevel.objects.filter(competence__in=plannedCompetences.values_list('competence', flat=True))
             achievedCompetenceCategories = CompetenceCategory.objects.filter(competence__in=achievedCompetences.values_list('competence', flat=True))
             achievedCompetenceLevels = CompetenceLevel.objects.filter(competence__in=achievedCompetences.values_list('competence', flat=True))
+            #filter so that only unique values are left
+            competenceCategories = competenceCategories.distinct()
+            competenceLevels = competenceLevels.distinct()
+            plannedCompetenceCategories = plannedCompetenceCategories.distinct()
+            plannedCompetenceLevels = plannedCompetenceLevels.distinct()
+            achievedCompetenceCategories = achievedCompetenceCategories.distinct()
+            achievedCompetenceLevels = achievedCompetenceLevels.distinct()
+            #order competences by level from low to high
+            allCompetences = allCompetences.order_by('competenceLevel')
             return render(request,
                             'main/competenceprofile.html',
                             {'Competences': allCompetences, 'PlannedCompetences': plannedCompetences, 'AchievedCompetences': achievedCompetences, 'CompetenceCategories': competenceCategories, 'CompetenceLevels': competenceLevels, 'PlannedCompetenceCategories': plannedCompetenceCategories, 'PlannedCompetenceLevels': plannedCompetenceLevels, 'AchievedCompetenceCategories': achievedCompetenceCategories, 'AchievedCompetenceLevels': achievedCompetenceLevels})
@@ -209,38 +218,6 @@ def AddAchievedCompetenceRequest(request, slug):
 
 
 
-def AddRessourceRequest(request, slug):
-    if not request.user.is_authenticated:
-        return redirect("main:login")
-    if request.method == 'POST':
-        if teacher := Teacher.objects.filter(user=request.user):
-            if competenceProfile := CompetenceProfile.objects.filter(teacher=teacher[0]):
-                if competence := Competence.objects.filter(slug=slug):
-                    form = AddRessourceForm(request.POST)
-                    if form.is_valid():
-                        response = form.save(competence=competence[0], teacher=teacher[0])
-                        if response == False:
-                            messages.error(request, "Ressource already added")
-                            return redirect("main:viewcompetence", slug=slug)
-                        elif response == "URL":
-                                messages.error(request, "URL not valid")
-                                return redirect("main:addressource", slug=slug)
-                        else:
-                            messages.success(request, "Ressource added")
-                            return redirect("main:viewcompetence", slug=slug)
-                else:
-                    messages.error(request, "Competence not found")
-            else:
-                messages.error(request, "Competence profile not found")
-        else:
-            messages.error(request, "Teacher not found")
-        return redirect("main:competenceprofile")
-
-    form = AddRessourceForm()
-    return render(request, 'main/addcompetence.html', {'form': form})
-
-
-
 def ViewCompetenceRequest(request, slug):
     # sourcery skip: extract-method, remove-unnecessary-else
     if not request.user.is_authenticated:
@@ -250,21 +227,8 @@ def ViewCompetenceRequest(request, slug):
         competenceCategory = CompetenceCategory.objects.filter(competence=competence)[0]
         competenceLevel = CompetenceLevel.objects.filter(competence=competence)[0]
         teacher = Teacher.objects.filter(user=request.user)[0]
-        ressources = Ressource.objects.filter(competence=competence, teacher=teacher)
+        ressources = Ressource.objects.filter(competence=competence)
         return render(request, 'main/viewcompetence.html', {'Competence': competence, 'CompetenceCategory': competenceCategory, 'CompetenceLevel': competenceLevel, 'Ressources': ressources})
     else:
         messages.error(request, "Competence not found")
         return redirect("main:competenceprofile")
-
-
-
-def DeleteRessourceRequest(request, slug, competenceSlug):
-    if not request.user.is_authenticated:
-        return redirect("main:login")
-    if ressource := Ressource.objects.filter(slug=slug):
-        ressource.delete()
-        messages.success(request, "Ressource deleted")
-        return redirect("main:viewcompetence", slug=competenceSlug)
-    else:
-        messages.error(request, "Ressource not found")
-    return redirect("main:competenceprofile")

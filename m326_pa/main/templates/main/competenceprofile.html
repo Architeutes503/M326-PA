@@ -1,81 +1,110 @@
-{% extends "main/header.html" %} 
+{% extends "main/header.html" %} {% block content %}
+<h2>Available Competences: {{Competences.count}}</h2>
+<!-- generate a table for every competence category -->
+{% for competenceCategory in CompetenceCategories %}
+  <table class="striped" style="width:120%">
+    <thead>
+      <tr>
+        <th>{{competenceCategory}} Category</th>
+        <th>Level</th>
+        <th>Job</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for competenceLevel in CompetenceLevels %}
+        {% for competence in Competences %}
+          {% if competence.competenceCategory == competenceCategory and competence.competenceLevel == competenceLevel %}
+            <tr>
+              <td>{{competence.name}}</td>
+              <td>{{competence.competenceLevel}}</td>
+              <td>{{competence.job}}</td>
+              <td>{{competence.description}}</td>
+              <td>
+                <a href="viewcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">View</i></a>
+                <a href="addplannedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Plan</i></a>
+                <a href="addachievedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Achieve</i></a>
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <br>
+{% endfor %}
 
-{% block content %}
-<div>
-<div class="row">
-  <div class="col s12 m8 l90">
-      <div class="card amber darken-2 hoverable">
-        <div class="card-content black-text">
-          <h2>Available Competences: {{Competences.count}}</h2>
-          <!-- loop through all categories used by competences -->
-          {% for competenceCategory in CompetenceCategories %}
-            <h4>{{competenceCategory}} Category:</h4>
-            <!-- loop through all levels used by competences -->
-            {% for competenceLevel in CompetenceLevels %}
-              <h5>{{competenceLevel}} Level:</h5>
-              <!-- loop through all competences -->
-              {% for competence in Competences %}
-                <!-- if competence is in category and level -->
-                {% if competence.competenceCategory == competenceCategory and competence.competenceLevel == competenceLevel %}
-                  <!-- if competence is not planned or achieved -->
-                  {% if competence not in PlannedCompetences and competence not in AchievedCompetences %}
-                    <p>{{competence}} <a href="addplannedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Plan</i></a> <a href="addachievedcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Achieve</i></a><a href="viewcompetence/{{competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">View</i></a></p>
-                  {% endif %}
-                {% endif %}
-              {% endfor %}
-            {% endfor %}
-          {% endfor %}
-        </div>
-      </div>
-    </a>
-  </div>
-</div>
+  <!-- same for planned competences -->
+<h2>Planned Competences: {{PlannedCompetences.count}}</h2>
+{% for competenceCategory in PlannedCompetenceCategories %}
+  <table class="striped" style="width:120%">
+    <thead>
+      <tr>
+        <th>{{competenceCategory}} Category</th>
+        <th>Level</th>
+        <th>Job</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for competenceLevel in PlannedCompetenceLevels %}
+        {% for plannedCompetence in PlannedCompetences %}
+          {% if plannedCompetence.competence.competenceCategory == competenceCategory and plannedCompetence.competence.competenceLevel == competenceLevel %}
+            <tr>
+              <td>{{plannedCompetence.competence.name}}</td>
+              <td>{{plannedCompetence.competence.competenceLevel}}</td>
+              <td>{{plannedCompetence.competence.job}}</td>
+              <td>{{plannedCompetence.competence.description}}</td>
+              <td>
+                <a href="viewcompetence/{{plannedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">View</i></a>
+                <a href="addachievedcompetence/{{plannedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Achieve</i></a>  
+                <a href="/removecompetence/{{plannedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a>
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <br>
+{% endfor %}
+
+<!-- same for achieved competences -->
+<h2>Achieved Competences: {{AchievedCompetences.count}}</h2>
+{% for competenceCategory in AchievedCompetenceCategories %}
+  <table class="striped" style="width:120%">
+    <thead>
+      <tr>
+        <th>{{competenceCategory}} Category</th>
+        <th>Level</th>
+        <th>Job</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for competenceLevel in AchievedCompetenceLevels %}
+        {% for achievedCompetence in AchievedCompetences %}
+          {% if achievedCompetence.competence.competenceCategory == competenceCategory and achievedCompetence.competence.competenceLevel == competenceLevel %}
+            <tr>
+              <td>{{achievedCompetence.competence.name}}</td>
+              <td>{{achievedCompetence.competence.competenceLevel}}</td>
+              <td>{{achievedCompetence.competence.job}}</td>
+              <td>{{achievedCompetence.competence.description}}</td>
+              <td>
+                <a href="viewcompetence/{{achievedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">View</i></a>
+                <a href="/removecompetence/{{achievedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a>
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <br>
+{% endfor %}
 
 
-<div>
-<div class="row">
-  <div class="col s12 m8 l90">
-      <div class="card amber darken-2 hoverable">
-        <div class="card-content black-text">
-          <h2>Planned Competences: {{PlannedCompetences.count}}</h2>
-          {% for competenceCategory in PlannedCompetenceCategories %}
-            <h4>{{competenceCategory}} Category:</h4>
-            {% for competenceLevel in PlannedCompetenceLevels %}
-              <h5>{{competenceLevel}} Level:</h5>
-              {% for plannedCompetence in PlannedCompetences %}
-                {% if plannedCompetence.competence.competenceCategory == competenceCategory and plannedCompetence.competence.competenceLevel == competenceLevel %}
-                  <p>{{plannedCompetence}} <a href="/removecompetence/{{plannedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a> <a href="addachievedcompetence/{{plannedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">Achieve</i></a><a href="viewcompetence/{{plannedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">View</i></a></p>
-                {% endif %}
-              {% endfor %}
-            {% endfor %}
-          {% endfor %}
-        </div>
-      </div>
-    </a>
-  </div>
-</div>
-
-
-<div>
-<div class="row">
-  <div class="col s12 m8 l90">
-      <div class="card amber darken-2 hoverable">
-        <div class="card-content black-text">
-          <h1>Achieved Competences: {{AchievedCompetences.count}}</h1>
-          {% for competenceCategory in AchievedCompetenceCategories %}
-            <h4>{{competenceCategory}} Category:</h4>
-            {% for competenceLevel in AchievedCompetenceLevels %}
-              <h5>{{competenceLevel}} Level:</h5>
-              {% for achievedCompetence in AchievedCompetences %}
-                {% if achievedCompetence.competence.competenceCategory == competenceCategory and achievedCompetence.competence.competenceLevel == competenceLevel %}
-                  <p>{{achievedCompetence}} <a href="/removecompetence/{{achievedCompetence.slug}}" class="waves-effect waves-light btn red"><i class="material-icons">Remove</i></a><a href="viewcompetence/{{achievedCompetence.competence.slug}}" class="waves-effect waves-light btn green"><i class="material-icons">View</i></a></p>
-                {% endif %}
-              {% endfor %}
-            {% endfor %}
-          {% endfor %}
-        </div>
-      </div>
-    </a>
-  </div>
-</div>
 {% endblock %}

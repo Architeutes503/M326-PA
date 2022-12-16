@@ -30,7 +30,5 @@ urlpatterns = [
     path("removecompetence/<slug:slug>", views.DeleteCompetenceRequest, name="removecompetence"),
     path("competenceprofile/addachievedcompetence/<slug:slug>", views.AddAchievedCompetenceRequest, name="addachievedcompetence"),
     path("competenceprofile/addplannedcompetence/<slug:slug>", views.AddPlannedCompetenceRequest, name="addplannedcompetence"),
-    path("competenceprofile/addressource/<slug:slug>", views.AddRessourceRequest, name="addressource"),
     path("competenceprofile/viewcompetence/<slug:slug>", views.ViewCompetenceRequest, name="viewcompetence"),
-    path("removeressource/<slug:slug>/<slug:competenceSlug>", views.DeleteRessourceRequest, name="removeressource"),
 ]
