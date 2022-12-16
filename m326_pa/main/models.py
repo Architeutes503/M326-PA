@@ -172,27 +172,6 @@ class CompetenceProfile(models.Model):
         return self.name
 
 
-
-class AvailableCompetence(models.Model):
-    competence = models.ForeignKey(Competence, on_delete=models.CASCADE, default=1)
-    CompetenceProfile = models.ForeignKey(CompetenceProfile, on_delete=models.CASCADE)
-    updatedAt = models.DateTimeField(default=timezone.now)
-    createdAt = models.DateTimeField(editable=False)
-
-    def save(self, *args, **kwargs):
-        ''' On save, update timestamps '''
-        if not self.id:
-            self.createdAt = timezone.now()
-        self.updatedAt = timezone.now()
-        return super(AvailableCompetence, self).save(*args, **kwargs)
-
-    class Meta:
-        verbose_name_plural = "Avilable Competences"
-
-    def __str__(self):
-        return f"{self.competence.name} - {self.teacher.name}"
-
-
 class AchievedCompetence(models.Model):
     competence = models.ForeignKey(Competence, on_delete=models.CASCADE, default=1)
     achievedAt = models.DateTimeField(default=timezone.now)
